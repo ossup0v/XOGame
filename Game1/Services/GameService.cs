@@ -8,15 +8,15 @@ namespace Game1.Services
 {
 	public class GameService
 	{
-		private List<Point> _points = new List<Point> 
-		{ 
+		private List<Point> _points = new List<Point>
+		{
 			new Point(1, 1), new Point(1, 3), new Point(1, 5),
 			new Point(3, 1), new Point(3, 3), new Point(3, 5),
 			new Point(5, 1), new Point(5, 3), new Point(5, 5),
 		};
 
 		private List<PlayerBase> _players = new List<PlayerBase>
-		{ new HumanPlayer('X'), new ComputerPlayer('O') };
+		{ new HumanPlayer('X'), new HumanPlayer('O') };
 
 		public void StartGame()
 		{
@@ -30,7 +30,7 @@ namespace Game1.Services
 					ApplyIndex(index, player.Code);
 
 					ConsoleManager.ShowMap(_points);
-					
+
 					if (GetAvailableIndexes().Count == 0)
 					{
 						Console.WriteLine("Игра закончена!");
@@ -54,7 +54,7 @@ namespace Game1.Services
 		{
 			var result = new List<int>(_points.Count);
 			foreach (var point in _points)
-				if(point.IsAvailable)
+				if (point.IsAvailable)
 					result.Add(IndexMapper.PointToIndex[point]);
 
 			return result;
@@ -62,17 +62,24 @@ namespace Game1.Services
 
 		private bool CheckEndOfGame()
 		{
-			return IsRowWin() || IsColumnWin();
+			return IsRowWin() || IsDiagWin() || IsColumnWin();
 		}
 
 		private bool IsRowWin()
 		{
-			return IsCodesEquals(0, 1, 2) 
-				|| IsCodesEquals(3, 4, 5) 
+			return IsCodesEquals(0, 1, 2)
+				|| IsCodesEquals(3, 4, 5)
 				|| IsCodesEquals(6, 7, 8);
 		}
 
 		private bool IsColumnWin()
+		{
+			return IsCodesEquals(0, 3, 6)
+				|| IsCodesEquals(1, 4, 7)
+				|| IsCodesEquals(2, 5, 8);
+		}
+
+		private bool IsDiagWin()
 		{
 			return IsCodesEquals(0, 4, 8)
 				|| IsCodesEquals(6, 4, 2);
